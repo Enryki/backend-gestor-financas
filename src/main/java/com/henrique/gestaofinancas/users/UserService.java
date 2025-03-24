@@ -1,5 +1,7 @@
 package com.henrique.gestaofinancas.users;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -9,8 +11,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void addNewUser(User user){
-        userRepository.save(user);
+    public User addNewUser(User user){
+        return userRepository.save(user);
     }
+
+    public List<User> listAll(){
+        return userRepository.findAll();
+    }
+
+    public Optional<User> verificaUsuario(String username){
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        return userOptional;
+    }
+
 
 }
