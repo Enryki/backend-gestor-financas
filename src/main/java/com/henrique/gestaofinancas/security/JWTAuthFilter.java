@@ -2,6 +2,8 @@ package com.henrique.gestaofinancas.security;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,12 +62,21 @@ public class JWTAuthFilter extends OncePerRequestFilter {  // Alterado para Once
                 .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRACAO))
                 .sign(Algorithm.HMAC512(TOKEN_SENHA));
 
-            response.getWriter().write(token);
-            response.getWriter().flush();
+            Map<String, String> tokenResponse = new HashMap<>();
+            tokenResponse.put("token", token);
+            
+            // Configure o content-type
+            response.setContentType("application/json");
+            
+            // Escreva o JSON na resposta
+            new ObjectMapper().writeValue(response.getWriter(), tokenResponse);
             
         } catch (AuthenticationException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Falha na autenticação");
+            response.setContentType("application/json");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Falha na autenticação");
+            new ObjectMapper().writeValue(response.getWriter(), errorResponse);
         }
     }
 }
