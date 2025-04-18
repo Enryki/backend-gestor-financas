@@ -24,5 +24,7 @@ public class UserService {
         return userOptional;
     }
 
-
+    public boolean verificaExistencia(String email, String username){
+        return userRepository.existsByEmailOrUsername(email, username);
+    }
 }

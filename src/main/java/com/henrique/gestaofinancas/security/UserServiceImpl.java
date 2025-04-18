@@ -1,7 +1,12 @@
-package com.henrique.gestaofinancas.users;
+package com.henrique.gestaofinancas.security;
 
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+
+import com.henrique.gestaofinancas.users.User;
+import com.henrique.gestaofinancas.users.UserData;
+import com.henrique.gestaofinancas.users.UserRepository;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
