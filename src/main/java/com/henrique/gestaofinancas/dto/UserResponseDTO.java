@@ -1,15 +1,15 @@
 package com.henrique.gestaofinancas.dto;
 
-public class UserDTO {
+public class UserResponseDTO {
     private Long id;
     private String username;
     private String email;
 
 
-    public UserDTO() {}
+    public UserResponseDTO() {}
 
 
-    public UserDTO(Long id, String username, String email) {
+    public UserResponseDTO(Long id, String username, String email) {
         this.id = id;
         this.username = username;
         this.email = email;

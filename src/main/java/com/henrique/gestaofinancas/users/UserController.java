@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.henrique.gestaofinancas.dto.UserDTO;
+import com.henrique.gestaofinancas.dto.UserCreateDTO;
+import com.henrique.gestaofinancas.dto.UserResponseDTO;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,8 +46,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addNewUser(@RequestBody User user) {
+    public ResponseEntity<?> addNewUser(@RequestBody UserCreateDTO user) {
 
+        
         boolean alreadyexists = userService.verificaExistencia(user.getEmail(), user.getUsername());
 
         if(alreadyexists){
@@ -56,10 +58,27 @@ public class UserController {
                 .status(HttpStatus.CONFLICT)
                 .body(errorResponse);
         }
+        
+        if(!user.getPassword().equals(user.getConfirm_password())){
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Senhas e Confirmação não correspondem");
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+        }
 
+        
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User savedUser = userService.addNewUser(user);
-        UserDTO userDTO = new UserDTO(
+
+        User savedUser = new User(
+            user.getUsername(),
+            user.getEmail(),
+            user.getPassword()
+        );
+
+        userService.addNewUser(savedUser);
+        
+        UserResponseDTO userDTO = new UserResponseDTO(
         savedUser.getId(),
         savedUser.getUsername(),
         savedUser.getEmail()
