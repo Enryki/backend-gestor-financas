@@ -29,6 +29,11 @@ public class UserData implements UserDetails {
         return user.orElse(new User()).getUsername();
     }
 
+
+    public Long getId(){
+        return user.orElse(new User()).getId();
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true; 

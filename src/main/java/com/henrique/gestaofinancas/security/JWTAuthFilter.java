@@ -59,6 +59,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {  // Alterado para Once
             UserData userData = (UserData) authentication.getPrincipal();
             String token = JWT.create()
                 .withSubject(userData.getUsername())
+                .withClaim("id", userData.getId())
                 .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRACAO))
                 .sign(Algorithm.HMAC512(TOKEN_SENHA));
 
