@@ -24,6 +24,11 @@ public class UserService {
         return userOptional;
     }
 
+    public User verificaUsuarioporId(Long id) {
+        return userRepository.findById(id)
+                 .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
+    }
+    
     public boolean verificaExistencia(String email, String username){
         return userRepository.existsByEmailOrUsername(email, username);
     }

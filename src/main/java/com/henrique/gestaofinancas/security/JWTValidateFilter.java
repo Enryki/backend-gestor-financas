@@ -4,10 +4,12 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -40,25 +42,34 @@ public class JWTValidateFilter extends BasicAuthenticationFilter{
 
         String token = atributo.replace(ATRIBUTO_PREFIXO, "");
 
-        UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(token);
+        UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(token, request);
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         chain.doFilter(request,response);
 
     }
 
-    private UsernamePasswordAuthenticationToken getAuthenticationToken(String token){
-        
-        String usuario = JWT.require(Algorithm.HMAC512(JWTAuthFilter.TOKEN_SENHA))
-                            .build()   
-                            .verify(token)
-                            .getSubject();
+    private UsernamePasswordAuthenticationToken getAuthenticationToken(String token, HttpServletRequest request) {
+        try {
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JWTAuthFilter.TOKEN_SENHA))
+                                        .build()
+                                        .verify(token);
 
-        if (usuario == null){
-            return null;
+            String usuario = decodedJWT.getSubject(); 
+
+            if (usuario == null) {
+                return null;
+            }
+
+            Long userId = decodedJWT.getClaim("id").asLong();
+            request.setAttribute("userId", userId); 
+
+
+            // Agora você pode criar um token de autenticação com o ID, se necessário
+            return new UsernamePasswordAuthenticationToken(usuario, null, new ArrayList<>());
+        } catch (Exception e) {
+            return null; // Se a validação falhar ou o token não for válido
         }
-
-        return new UsernamePasswordAuthenticationToken(usuario, null, new ArrayList<>());
     }
 
 }
