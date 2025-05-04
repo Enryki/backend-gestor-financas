@@ -13,8 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,12 +59,9 @@ public class JWTValidateFilter extends BasicAuthenticationFilter{
                 return null;
             }
 
-            Long userId = decodedJWT.getClaim("id").asLong();
-            request.setAttribute("userId", userId); 
-
-
-            // Agora você pode criar um token de autenticação com o ID, se necessário
-            return new UsernamePasswordAuthenticationToken(usuario, null, new ArrayList<>());
+    Long userId = decodedJWT.getClaim("id").asLong();
+    UserPrincipal principal = new UserPrincipal(userId, usuario);
+    return new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         } catch (Exception e) {
             return null; // Se a validação falhar ou o token não for válido
         }

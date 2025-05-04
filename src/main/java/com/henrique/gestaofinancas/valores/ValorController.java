@@ -1,11 +1,13 @@
 package com.henrique.gestaofinancas.valores;
 
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.henrique.gestaofinancas.dto.ValorRequestDTO;
+import com.henrique.gestaofinancas.security.UserPrincipal;
 import com.henrique.gestaofinancas.users.User;
 import com.henrique.gestaofinancas.users.UserService;
 
@@ -30,9 +32,8 @@ public class ValorController {
 
     @PostMapping
     public String AddValue(@RequestBody ValorRequestDTO valorDTO, HttpServletRequest request) {
-        System.out.println("teste1");
-        Long userId = (Long) request.getAttribute("userId");
-        System.out.println("teste2");
+    UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Long userId = userPrincipal.getId();
         System.out.println(userId);
         User user = userService.verificaUsuarioporId(userId);
 
