@@ -1,6 +1,7 @@
 package com.henrique.gestaofinancas.valores;
 
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +32,9 @@ public class ValorController {
     }
 
     @PostMapping
-    public String AddValue(@RequestBody ValorRequestDTO valorDTO, HttpServletRequest request) {
+    public ResponseEntity<Object> AddValue(@RequestBody ValorRequestDTO valorDTO, HttpServletRequest request) {
     UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Long userId = userPrincipal.getId();
-        System.out.println(userId);
         User user = userService.verificaUsuarioporId(userId);
 
         Valor valor = new Valor(
@@ -47,7 +47,7 @@ public class ValorController {
 
         valorService.addValue(valor);
         
-        return "deu certo!";
+        return ResponseEntity.noContent().build();
     }
     
 }
