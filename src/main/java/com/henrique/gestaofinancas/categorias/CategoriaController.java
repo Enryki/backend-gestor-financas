@@ -14,6 +14,9 @@ import com.henrique.gestaofinancas.users.UserService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
+
 
 @RestController
 @RequestMapping(path = "api/categoria")
@@ -31,7 +34,7 @@ public class CategoriaController {
     @PostMapping
     public ResponseEntity<Object> AddValue(@RequestBody CategoriaDTO categoriaDTO){
         UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(userPrincipal);
+
         Long userId = userPrincipal.getId();
 
         User user = userService.verificaUsuarioporId(userId);
@@ -41,6 +44,14 @@ public class CategoriaController {
         categoriaService.addCategoria(categoria);
 
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> editValue(@RequestBody Categoria categoria) {
+
+        categoriaService.updateCategoria(categoria);
+        
         return ResponseEntity.noContent().build();
     }
     
