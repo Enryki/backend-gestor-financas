@@ -3,6 +3,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.henrique.gestaofinancas.dto.CategoriaUpdateDTO;
+
 @Service
 public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
@@ -15,10 +17,10 @@ public class CategoriaService {
         return categoriaRepository.save(categoria);
     }
 
-    public Categoria updateCategoria(Categoria novCategoria){
+    public Categoria updateCategoria(CategoriaUpdateDTO novCategoria, Long userId){
         Optional<Categoria> categoriaOptional = categoriaRepository.findById(novCategoria.getId());
-
-        if(categoriaOptional.isEmpty()){
+ 
+        if(categoriaOptional.isEmpty() || !userId.equals(categoriaOptional.get().getId())){
             throw new RuntimeException("Erro ao editar categoria.");
         }
 
@@ -27,6 +29,7 @@ public class CategoriaService {
         
         return categoriaRepository.save(categoriaExistente);
     }
+
 
     
 }

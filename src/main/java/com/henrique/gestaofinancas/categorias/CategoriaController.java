@@ -4,10 +4,12 @@ package com.henrique.gestaofinancas.categorias;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.henrique.gestaofinancas.dto.CategoriaDTO;
+import com.henrique.gestaofinancas.dto.CategoriaUpdateDTO;
 import com.henrique.gestaofinancas.security.UserPrincipal;
 import com.henrique.gestaofinancas.users.User;
 import com.henrique.gestaofinancas.users.UserService;
@@ -48,10 +50,17 @@ public class CategoriaController {
     }
 
     @PutMapping
-    public ResponseEntity<Object> editValue(@RequestBody Categoria categoria) {
+    public ResponseEntity<Object> editValue(@RequestBody CategoriaUpdateDTO categoria) {
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = userPrincipal.getId();
 
-        categoriaService.updateCategoria(categoria);
+        categoriaService.updateCategoria(categoria, userId);
         
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Object> deletValue(@RequestBody CategoriaUpdateDTO categoria){
         return ResponseEntity.noContent().build();
     }
     
